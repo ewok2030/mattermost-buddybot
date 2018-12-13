@@ -42,7 +42,7 @@ kubectl -n $NAMESPACE create secret generic mattermost-buddybot \
     --from-literal=username=buddybot \
     --from-literal=password=password123 \
     --from-literal=debug-channel=debug-channel \
-    --from-literal=bebug-channel-team=my-team
+    --from-literal=debug-channel-team=my-team
 ```
 
 Then deploy the container via the provided manifest:
