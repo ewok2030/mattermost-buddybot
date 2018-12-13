@@ -1,0 +1,54 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mattermost-buddybot
+  labels:
+    app: mattermost-buddybot
+spec:
+  replicas: 1
+  selector:
+    matchLabels: &labels
+      app: mattermost-buddybot
+  template:
+    metadata:
+      name: mattermost-buddybot
+      labels:
+        <<: *labels # copy the labels defined in anchor
+    spec:
+      containers:
+      - name: mattermost-buddybot
+        image: ewok2030/mattermost-buddybot:latest
+        env:
+          - name: SERVER_URL
+            valueFrom:
+              secretKeyRef:
+                name: mattermost-buddybot
+                key: server-url
+          - name: BOT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mattermost-buddybot
+                key: username
+          - name: BOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mattermost-buddybot
+                key: password
+          - name: DEBUG_CHANNEL
+            valueFrom:
+              secretKeyRef:
+                name: mattermost-buddybot
+                key: debug-channel
+          - name: DEBUG_CHANNEL_TEAM
+            valueFrom:
+              secretKeyRef:
+                name: mattermost-buddybot
+                key: debug-channel-team
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "125m"
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
