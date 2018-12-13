@@ -2,8 +2,10 @@ package bot
 
 import (
 	"fmt"
+	"math/rand"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/ewok2030/mattermost-buddybot/pkg/util"
 	"github.com/mattermost/mattermost-server/model"
@@ -73,7 +75,38 @@ func (b *BuddyBot) HandleMessage(event *model.WebSocketEvent) {
 			b.SendMessage(post.ChannelId, "Hello!", post.Id)
 			return
 		}
+
+		// if you see any word matching 'buddy' then respond
+		if matched, _ := regexp.MatchString(`(?:^|\W)buddy(?:$|\W)`, post.Message); matched {
+
+			// Get a random buddy!
+			buddy := b.findBuddy(post.ChannelId)
+
+			b.SendMessage(post.ChannelId, fmt.Sprintf("Why don't you try talking to %s?", buddy.Username), post.Id)
+			return
+		}
+
 	}
 
 	b.SendMessage(post.ChannelId, "I did not understand you. :(", post.Id)
+}
+
+func (b *BuddyBot) findBuddy(channelID string) *model.User {
+
+	// Get the channel for this message, to access TeamId
+	channel, _ := b.Client.GetChannel(channelID, "")
+
+	// Get the team size
+	teamStats, _ := b.Client.GetTeamStats(channel.TeamId, "")
+
+	// Get random page of users
+	rand.Seed(time.Now().Unix())
+	const pageSize = 10
+	pageNum := rand.Intn(int(teamStats.TotalMemberCount) / pageSize)
+	teamMembers, _ := b.Client.GetTeamMembers(channel.TeamId, pageNum, pageSize, "")
+
+	// Pick a random buddy!
+	buddy, _ := b.Client.GetUser(teamMembers[rand.Intn(len(teamMembers))].UserId, "")
+
+	return buddy
 }
