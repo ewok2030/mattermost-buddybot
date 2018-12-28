@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/ewok2030/mattermost-buddybot/pkg/bot"
+	"github.com/mpalumbo7/mattermost-buddybot/pkg/bot"
 	"github.com/mattermost/mattermost-server/model"
 )
 

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ewok2030/mattermost-buddybot/pkg/util"
 	"github.com/mattermost/mattermost-server/model"
+	"github.com/mpalumbo7/mattermost-buddybot/pkg/util"
 )
 
 // BuddyBot is for sending and handling messages
